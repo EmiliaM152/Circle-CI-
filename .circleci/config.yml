@@ -41,6 +41,9 @@ workflows:
   version: 2
   validate_and_test:
     jobs:
+      - lint
+  validate_and_test:
+    jobs:
       - install_dependencies
       - lint:
           requires:
