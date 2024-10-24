@@ -9,8 +9,8 @@ jobs:
   install_dependencies:
     executor: node_executor
     steps:
-      - checkout  # Clona el código
-      - run: npm install  # Instala las dependencias
+      - checkout
+      - run: npm install  # Instala todas las dependencias
 
   lint:
     executor: node_executor
