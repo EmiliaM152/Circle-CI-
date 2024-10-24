@@ -9,18 +9,13 @@ jobs:
   install_dependencies:
     executor: node_executor
     steps:
-<<<<<<< HEAD
       - checkout
       - run: npm install
-=======
       - checkout  # Clona el repositorio
       - run: npm install  # Instala las dependencias del proyecto
->>>>>>> 65d266cf127029e1654f13cfe7444c36fd2989e8
-
   lint:
     executor: node_executor
     steps:
-<<<<<<< HEAD
       - checkout
       - run: npm run lint
 
@@ -45,11 +40,9 @@ jobs:
           curl -X POST -H "Content-Type: application/json" \
           -d '{"text": "Pipeline completado: '"${CIRCLE_WORKFLOW_ID}"'"}' \
           https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
-=======
       - checkout  # Clona el código
       - run: npm install  # Asegúrate de instalar las dependencias
       - run: npm run lint  # Ejecuta el linter
->>>>>>> 65d266cf127029e1654f13cfe7444c36fd2989e8
 
 workflows:
   version: 2
