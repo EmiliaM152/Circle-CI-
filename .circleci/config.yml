@@ -3,7 +3,7 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: circleci/node:18  # Imagen con Node.js 14 preinstalado
+      - image: circleci/node:20  # Imagen con Node.js 14 preinstalado
 
 jobs:
   install_dependencies:
