@@ -50,4 +50,3 @@ workflows:
       - test_integration:
           requires:
             - test_unit
-
