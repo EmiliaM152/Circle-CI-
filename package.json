@@ -2,10 +2,9 @@
   "name": "circleci-project",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "type": "module",  // <- Esto le dice a Node que use ESM
   "scripts": {
-    "lint": "eslint .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint": "eslint ."
   },
   "author": "",
   "license": "ISC",
@@ -13,4 +12,3 @@
     "eslint": "^9.13.0"
   }
 }
-
