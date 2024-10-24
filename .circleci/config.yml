@@ -9,13 +9,14 @@ jobs:
   install_dependencies:
     executor: node_executor
     steps:
-      - checkout
-      - run: npm install  # Instala todas las dependencias
+      - checkout  # Clona el repositorio
+      - run: npm install  # Instala las dependencias del proyecto
 
   lint:
     executor: node_executor
     steps:
-      - checkout
+      - checkout  # Clona el código
+      - run: npm install  # Asegúrate de instalar las dependencias
       - run: npm run lint  # Ejecuta el linter
 
 workflows:
