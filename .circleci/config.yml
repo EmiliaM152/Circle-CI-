@@ -23,7 +23,6 @@ jobs:
     steps:
       - checkout
       - run: npm run test:unit
-    parallelism: 2  # Ejecuta pruebas en 2 contenedores en paralelo
 
   test_integration:
     executor: node_executor
@@ -35,14 +34,9 @@ jobs:
     executor: node_executor
     steps:
       - run: |
-          curl -X POST -H "Content-Type: application/json" \
-          -d '{"text": "Pipeline completado: '"${CIRCLE_WORKFLOW_ID}"'"}' \
-          https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
-
+          echo "Notificando sobre el estado del pipeline"
 workflows:
   version: 2
-
-  # Workflow 1: Validación y Pruebas
   validate_and_test:
     jobs:
       - install_dependencies
@@ -55,10 +49,3 @@ workflows:
       - test_integration:
           requires:
             - test_unit
-
-  # Workflow 2: Notificación después de las pruebas de integración
-  deploy_and_notify:
-    jobs:
-      - notify:
-          requires:
-            - test_integration
