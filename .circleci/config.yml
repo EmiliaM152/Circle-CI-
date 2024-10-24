@@ -39,7 +39,7 @@ jobs:
 workflows:
   version: 2
 
-  validate_and_test:
+  complete_pipeline:
     jobs:
       - install_dependencies
       - lint:
@@ -51,10 +51,6 @@ workflows:
       - test_integration:
           requires:
             - test_unit
-
-  notify_workflow:
-    jobs:
       - notify:
           requires:
             - test_integration
-
