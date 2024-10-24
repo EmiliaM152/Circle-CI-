@@ -1,13 +1,63 @@
 version: 2.1
 
+executors:
+  node_executor:
+    docker:
+      - image: circleci/node:14
+
 jobs:
-  saluda:
-    docker: 
-      - image: cimg/base:stable 
+  install_dependencies:
+    executor: node_executor
     steps:
-      - run: echo hola
+      - checkout
+      - run: npm install
+
+  lint:
+    executor: node_executor
+    steps:
+      - checkout
+      - run: npm run lint
+
+  test_unit:
+    executor: node_executor
+    steps:
+      - checkout
+      - run: npm run test:unit
+    parallelism: 2  # Pruebas paralelas en 2 contenedores
+
+  test_integration:
+    executor: node_executor
+    steps:
+      - checkout
+      - run: npm run test:integration
+
+  notify:
+    executor: node_executor
+    steps:
+      - run: |
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"text": "Pipeline completado: '"${CIRCLE_WORKFLOW_ID}"'"}' \
+          https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 
 workflows:
-  hello:
+  version: 2
+
+  validate_and_test:
     jobs:
-      - saluda
+      - install_dependencies
+      - lint:
+          requires:
+            - install_dependencies
+      - test_unit:
+          requires:
+            - lint
+      - test_integration:
+          requires:
+            - test_unit
+
+  deploy_and_notify:
+    jobs:
+      - notify:
+          requires:
+            - test_integration
+
