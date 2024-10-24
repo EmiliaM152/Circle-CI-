@@ -9,20 +9,55 @@ jobs:
   install_dependencies:
     executor: node_executor
     steps:
-      - checkout  # Clona el código
-      - run: npm install  # Instala las dependencias
+      - checkout
+      - run: npm install
 
   lint:
     executor: node_executor
     steps:
       - checkout
-      - run: npm run lint  # Ejecuta el linter
+      - run: npm run lint
+
+  test_unit:
+    executor: node_executor
+    steps:
+      - checkout
+      - run: npm run test:unit
+    parallelism: 2  # Ejecuta pruebas unitarias en paralelo en 2 contenedores
+
+  test_integration:
+    executor: node_executor
+    steps:
+      - checkout
+      - run: npm run test:integration
+
+  notify:
+    executor: node_executor
+    steps:
+      - run: |
+          echo "Notificación: El pipeline se ha completado"
+          curl -X POST -H "Content-Type: application/json" \
+          -d '{"text": "Pipeline completado: '"${CIRCLE_WORKFLOW_ID}"'"}' \
+          https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
 
 workflows:
   version: 2
-  lint_and_test:
+
+  validate_and_test:
     jobs:
       - install_dependencies
       - lint:
           requires:
             - install_dependencies
+      - test_unit:
+          requires:
+            - lint
+      - test_integration:
+          requires:
+            - test_unit
+
+  notify_workflow:
+    jobs:
+      - notify:
+          requires:
+            - test_integration
