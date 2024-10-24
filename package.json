@@ -2,7 +2,7 @@
   "name": "circleci-project",
   "version": "1.0.0",
   "description": "",
-  "type": "module",  // <- Esto le dice a Node que use ESM
+  "type": "module",
   "scripts": {
     "lint": "eslint ."
   },
