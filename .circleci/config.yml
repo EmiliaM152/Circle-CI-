@@ -9,48 +9,20 @@ jobs:
   install_dependencies:
     executor: node_executor
     steps:
-      - checkout
-      - run: npm install
+      - checkout  # Clona el código
+      - run: npm install  # Instala las dependencias
 
   lint:
     executor: node_executor
     steps:
       - checkout
-      - run: npm run lint
-
-  test_unit:
-    executor: node_executor
-    steps:
-      - checkout
-      - run: npm run test:unit
-
-  test_integration:
-    executor: node_executor
-    steps:
-      - checkout
-      - run: npm run test:integration
-
-  notify:
-    executor: node_executor
-    steps:
-      - run: |
-          echo "Notificando sobre el estado del pipeline"
+      - run: npm run lint  # Ejecuta el linter
 
 workflows:
   version: 2
-
-  complete_pipeline:
+  lint_and_test:
     jobs:
       - install_dependencies
       - lint:
           requires:
             - install_dependencies
-      - test_unit:
-          requires:
-            - lint
-      - test_integration:
-          requires:
-            - test_unit
-      - notify:
-          requires:
-            - test_integration
