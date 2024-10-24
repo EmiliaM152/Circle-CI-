@@ -1,11 +1,3 @@
-version: 2.1
-
-executors:
-  node_executor:
-    docker:
-      - image: circleci/node:14
-
-jobs:
   install_dependencies:
     executor: node_executor
     steps:
@@ -53,4 +45,5 @@ workflows:
             - lint
       - test_integration:
           requires:
-            - test_unit
+            - test_
+
