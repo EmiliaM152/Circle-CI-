@@ -23,7 +23,7 @@ jobs:
     steps:
       - checkout
       - run: npm run test:unit
-    parallelism: 2  # Pruebas paralelas en 2 contenedores
+    parallelism: 2  # Ejecuta pruebas en 2 contenedores en paralelo
 
   test_integration:
     executor: node_executor
@@ -42,6 +42,7 @@ jobs:
 workflows:
   version: 2
 
+  # Workflow 1: Validación y Pruebas
   validate_and_test:
     jobs:
       - install_dependencies
@@ -55,9 +56,9 @@ workflows:
           requires:
             - test_unit
 
+  # Workflow 2: Notificación después de las pruebas de integración
   deploy_and_notify:
     jobs:
       - notify:
           requires:
             - test_integration
-
