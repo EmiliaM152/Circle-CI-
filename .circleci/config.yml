@@ -3,65 +3,61 @@ version: 2.1
 executors:
   node_executor:
     docker:
-      - image: circleci/node:14
+      - image: circleci/node:14  # Imagen con Node.js 14 preinstalado
 
 jobs:
   install_dependencies:
     executor: node_executor
     steps:
-      - checkout
-      - run: npm install
-      - checkout  # Clona el repositorio
+      - checkout  # Clona el código del repositorio
       - run: npm install  # Instala las dependencias del proyecto
+
   lint:
     executor: node_executor
     steps:
       - checkout
-      - run: npm run lint
+      - run: npm install  # Asegura que las dependencias estén presentes
+      - run: npm run lint  # Ejecuta el linter para verificar el estilo de código
 
   test_unit:
     executor: node_executor
+    parallelism: 2  # Corre en paralelo en dos contenedores
     steps:
       - checkout
-      - run: npm run test:unit
-    parallelism: 2  # Ejecuta pruebas unitarias en paralelo en 2 contenedores
+      - run: npm install  # Asegura que las dependencias estén instaladas
+      - run: npm run test:unit  # Ejecuta las pruebas unitarias
 
   test_integration:
     executor: node_executor
     steps:
       - checkout
-      - run: npm run test:integration
+      - run: npm install
+      - run: npm run test:integration  # Ejecuta las pruebas de integración
 
   notify:
     executor: node_executor
     steps:
       - run: |
-          echo "Notificación: El pipeline se ha completado"
+          echo "Notificación: El pipeline se ha completado con éxito"
           curl -X POST -H "Content-Type: application/json" \
           -d '{"text": "Pipeline completado: '"${CIRCLE_WORKFLOW_ID}"'"}' \
           https://hooks.slack.com/services/YOUR/SLACK/WEBHOOK
-      - checkout  # Clona el código
-      - run: npm install  # Asegúrate de instalar las dependencias
-      - run: npm run lint  # Ejecuta el linter
 
 workflows:
   version: 2
 
-  validate_and_test:
+  complete_pipeline:
     jobs:
-      - install_dependencies
+      - install_dependencies  # Instala las dependencias
       - lint:
           requires:
-            - install_dependencies
+            - install_dependencies  # Solo se ejecuta si la instalación fue exitosa
       - test_unit:
           requires:
-            - lint
+            - lint  # Ejecuta las pruebas unitarias después del linting
       - test_integration:
           requires:
-            - test_unit
-
-  notify_workflow:
-    jobs:
+            - test_unit  # Ejecuta las pruebas de integración después de las unitarias
       - notify:
           requires:
-            - test_integration
+            - test_integration  # Envía notificación tras completar las pruebas
